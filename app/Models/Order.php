@@ -57,4 +57,24 @@ class Order extends Model
             get: fn($value) => Carbon::parse($value)->format('d.m.Y в H:i:s')
         );
     }
+
+    /**
+     * @return string
+     */
+    public function getPeriod(): string
+    {
+        $date = Carbon::parse($this->getRawOriginal('created_at'));
+
+        $start = new Carbon('first day of last month');
+        $end = new Carbon('last day of last month');
+
+        $lastWeekEnd = new Carbon('last day of last week');
+
+        return match (true) {
+            $date->gte($start->startOfMonth()) && $date->lte($end->endOfMonth()) => 'lm',
+            $date->gt($lastWeekEnd->endOfWeek()) && $date->lt(Carbon::now()->endOfDay()) => 'cw',
+            $date->gt(Carbon::now()->startOfDay()) && $date->lt(Carbon::now()->endOfDay()) => 'cd',
+            default => ''
+        };
+    }
 }

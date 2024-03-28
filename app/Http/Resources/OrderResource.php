@@ -39,7 +39,9 @@ class OrderResource extends JsonResource
             'summary' => $this->whenLoaded('info', function () {
                 return $this->amount * $this->info->price;
             }),
-            'date' => $this->created_at
+            'period' => $this->getPeriod(),
+            'date' => $this->created_at,
+
         ];
     }
 }
