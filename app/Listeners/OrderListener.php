@@ -38,7 +38,16 @@ class OrderListener
             'place' => $event->order->info->place->name
         ];
 
-        Notification::send(['324831903'], new AlertNotification($message));
+        $updates = TelegramUpdates::create()->get();
+
+        if ($updates['ok']) {
+            if (Arr::has($updates['result'], 0)) {
+                $chat_id = Arr::get(Arr::last($updates['result']), 'message.chat.id');
+
+                Notification::route('telegram', $chat_id)
+                    ->notify(new AlertNotification($message));
+            }
+        }
 
     }
 }
