@@ -25,7 +25,11 @@ class TypeService implements APIInterface
         if (request()->query->has('size_id')) {
 
             $size_id = request()->query->get('size_id');
-            $items = Type::where('size_id', $size_id)->where('hide', false)->get();
+            $items = Type::where('size_id', $size_id)
+                ->where('hide', false)
+                ->whereHas('info', function ($query) {
+                    $query->where('amount', '>', 0);
+                })->get();
 
             return $this->success(new TypeCollection($items));
         }
