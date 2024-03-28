@@ -40,7 +40,7 @@ class OrderService implements APIInterface
     {
         if ($request->has('employee_id')) {
             $user_id = $request->get('employee_id');
-            $ordered_with_all = 'продано совместно с ' . User::select(['id', 'name'])->where('id', $request->user()->id)->first();
+            $ordered_with_all = 'продано совместно с ' . User::select(['id', 'name'])->where('id', $request->user()->id)->first()?->name;
 
         } else {
             $user_id = $request->user()->id;
