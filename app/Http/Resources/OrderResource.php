@@ -33,6 +33,9 @@ class OrderResource extends JsonResource
             'season' => $this->whenLoaded('info', function () {
                 return $this->info->type->season;
             }),
+            'type' => $this->whenLoaded('info', function () {
+                return $this->info->type->type;
+            }),
             'summary' => $this->whenLoaded('info', function () {
                 return $this->amount * $this->info->price;
             }),
