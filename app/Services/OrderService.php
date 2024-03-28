@@ -69,4 +69,14 @@ class OrderService implements APIInterface
 
         return $this->success(['message' => 'Заказ был успешно создан']);
     }
+
+    /**
+     * @param Order $order
+     * @return JsonResponse
+     */
+    public function deleteOne(Order $order): JsonResponse
+    {
+        $order->delete();
+        return $this->success(['message' => 'Заказ был успешно удалён']);
+    }
 }

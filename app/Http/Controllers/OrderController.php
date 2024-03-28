@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\History;
+use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,12 +24,12 @@ class OrderController extends Controller
         return $this->service->getAll();
     }
 
-    public function show()
+    public function show(Order $order)
     {
 
     }
 
-    public function update()
+    public function update(Request $request, Order $order)
     {
 
     }
@@ -43,8 +43,8 @@ class OrderController extends Controller
         return $this->service->store($request);
     }
 
-    public function destroy()
+    public function destroy(Order $order): JsonResponse
     {
-
+        return $this->service->deleteOne($order);
     }
 }
