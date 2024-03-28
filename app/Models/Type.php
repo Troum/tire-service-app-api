@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\SeasonEnum;
 use App\Observers\TypeObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,6 +57,13 @@ class Type extends Model
     public function info(): HasOne
     {
         return $this->hasOne(Info::class, 'type_id', 'id');
+    }
+
+    protected function hide(): Attribute
+    {
+        return new Attribute(
+          get: fn($value) => $value === 1
+        );
     }
 
 }
