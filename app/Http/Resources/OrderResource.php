@@ -40,6 +40,7 @@ class OrderResource extends JsonResource
                 return $this->amount * $this->info->price;
             }),
             'period' => $this->getPeriod(),
+            'ordered_with_all' => $this->ordered_with_all,
             'date' => $this->created_at,
 
         ];
