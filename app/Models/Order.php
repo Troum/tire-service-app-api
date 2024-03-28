@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property int $info_id
  * @property int $amount
+ * @property string $ordered_with_all
  * @property string $created_at
  * @property-read User $user
  * @property-read Info $info
@@ -27,9 +28,10 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-      'user_id',
-      'info_id',
-      'amount'
+        'user_id',
+        'info_id',
+        'amount',
+        'ordered_with_all'
     ];
 
     /**
@@ -69,10 +71,10 @@ class Order extends Model
         $end = new Carbon('last day of last month');
 
         $lastWeekEnd = new Carbon('last day of last week');
-
+        $yesterday = new Carbon('yesterday');
         return match (true) {
             $date->gte($start->startOfMonth()) && $date->lte($end->endOfMonth()) => 'lm',
-            $date->gt($lastWeekEnd->endOfWeek()) && $date->lt(Carbon::now()->endOfDay()) => 'cw',
+            $date->gt($lastWeekEnd->endOfWeek()) && $date->lt($yesterday->endOfDay()) => 'cw',
             $date->gt(Carbon::now()->startOfDay()) && $date->lt(Carbon::now()->endOfDay()) => 'cd',
             default => ''
         };

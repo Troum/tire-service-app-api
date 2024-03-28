@@ -7,6 +7,7 @@ use App\Http\Resources\Collections\OrderCollection;
 use App\Interfaces\APIInterface;
 use App\Models\Info;
 use App\Models\Order;
+use App\Models\User;
 use App\Traits\ResponseHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,8 +40,11 @@ class OrderService implements APIInterface
     {
         if ($request->has('employee_id')) {
             $user_id = $request->get('employee_id');
+            $ordered_with_all = 'совместно с ' . User::select(['id', 'name'])->where('id', $request->user()->id)->first();
+
         } else {
             $user_id = $request->user()->id;
+            $ordered_with_all = 'лично';
         }
 
         $info_id = $request->get('info_id');
@@ -57,7 +61,8 @@ class OrderService implements APIInterface
         Order::create([
             'user_id' => $user_id,
             'info_id' => $info_id,
-            'amount' => $amount
+            'amount' => $amount,
+            'ordered_with_all' => $ordered_with_all
         ]);
 
         broadcast(new UpdateInfoEvent($info->toArray()));
