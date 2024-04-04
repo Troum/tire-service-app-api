@@ -50,7 +50,6 @@ class AlertNotification extends Notification
                 ->line('*Сезон*: ' . self::SEASONS[$this->message->season])
                 ->line('*Размер*: ' . $this->message->size)
                 ->line('*Сумма*: ' . $this->message->income . ' BYN')
-                ->line('*Документ*: ' . $this->message->url . ' BYN')
                 ->button('Документ', $this->message->url);
         }
         return TelegramMessage::create()
