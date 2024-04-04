@@ -74,7 +74,9 @@ class OrderObserver
      */
     public function deleted(Order $order): void
     {
-        Storage::delete($order->url);
+        if (!is_null($order->url)) {
+            Storage::delete($order->url);
+        }
     }
 
     /**
