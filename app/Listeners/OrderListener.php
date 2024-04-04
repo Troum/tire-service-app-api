@@ -52,6 +52,8 @@ class OrderListener
             'order_' . $event->order->id . '.pdf'
         );
 
+        Log::info($url);
+
         $message = (object)[
             'username' => $event->username,
             'placed' => $event->placedBy,
