@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\OrderEvent;
 use App\Notifications\AlertNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -39,6 +40,18 @@ class OrderListener
         ];
 
         $updates = TelegramUpdates::create()->get();
+
+        Pdf::loadView('pdf.order', [
+            'orderId' => $event->order->id,
+            'employee' => $event->placedBy,
+            'service' => 'шиномонтаж',
+            'count' => $event->order->amount,
+            'price' => $event->order->info->price * $event->order->amount,
+            'name' => $event->order->info->name,
+            'address' => $event->order->info->place->address
+        ])->save('order_' . $event->order->id . '.pdf');
+
+
 
         if ($updates['ok']) {
             if (Arr::has($updates['result'], 0)) {

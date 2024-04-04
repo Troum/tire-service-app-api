@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BlockSQLInjectionMiddleware
 {
+    public $except = [
+      'order'
+    ];
     /**
      * Handle an incoming request.
      *
