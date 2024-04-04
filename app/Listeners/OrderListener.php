@@ -33,7 +33,6 @@ class OrderListener
 
         $updates = TelegramUpdates::create()->get();
 
-
         $data = [
             'orderId' => $event->order->id,
             'employee' => is_null($event->placedBy) ?
@@ -46,7 +45,12 @@ class OrderListener
             'address' => $event->order->info->place->address
         ];
 
-        $url = PdfService::makeFile('pdf.order', $data, 'public/orders/', 'order_' . $event->order->id . '.pdf');
+        $url = PdfService::makeFile(
+            'pdf.order',
+            $data,
+            'public/orders/',
+            'order_' . $event->order->id . '.pdf'
+        );
 
         $message = (object)[
             'username' => $event->username,
@@ -56,7 +60,8 @@ class OrderListener
             'size' => $event->order->info->type->size->size,
             'season' => $event->order->info->type->season->value,
             'income' => $event->order->info->price * $event->order->amount,
-            'place' => $event->order->info->place->name
+            'place' => $event->order->info->place->name,
+            'url' => $url
         ];
 
         if ($updates['ok']) {
@@ -67,12 +72,9 @@ class OrderListener
                     $chat_ids[] = Arr::get($chat, 'message.chat.id');
                 }
 
-                collect($chat_ids)->unique()->each(function ($id) use ($message, $event, $url) {
+                collect($chat_ids)->unique()->each(function ($id) use ($message, $event) {
                     Notification::route('telegram', $id)
                         ->notify(new AlertNotification($message));
-
-                    Notification::route('telegram', $id)
-                        ->notify(new OrderDocumentAttachNotification($url, 'order_' . $event->order->id . '.pdf'));
                 });
             }
         }

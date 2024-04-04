@@ -36,6 +36,9 @@ class AlertNotification extends Notification
         return ['telegram'];
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function toTelegram(): TelegramMessage
     {
         if (is_null($this->message->placed)) {
@@ -46,7 +49,9 @@ class AlertNotification extends Notification
                 ->line('*Производитель*: ' . $this->message->name)
                 ->line('*Сезон*: ' . self::SEASONS[$this->message->season])
                 ->line('*Размер*: ' . $this->message->size)
-                ->line('*Сумма*: ' . $this->message->income . ' BYN');
+                ->line('*Сумма*: ' . $this->message->income . ' BYN')
+                ->line('*Документ*: ' . $this->message->url . ' BYN')
+                ->button('*Документ*', $this->message->url);
         }
         return TelegramMessage::create()
             ->line('*Сервис*: ' . $this->message->place)
@@ -55,7 +60,8 @@ class AlertNotification extends Notification
             ->line('*Производитель*: ' . $this->message->name)
             ->line('*Сезон*: ' . self::SEASONS[$this->message->season])
             ->line('*Размер*: ' . $this->message->size)
-            ->line('*Сумма*: ' . $this->message->income . ' BYN');
+            ->line('*Сумма*: ' . $this->message->income . ' BYN')
+            ->button('*Документ*', $this->message->url);
 
     }
 
