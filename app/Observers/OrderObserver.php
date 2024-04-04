@@ -34,6 +34,16 @@ class OrderObserver
             'address' => $order->info->place->address
         ];
 
+        $url = PdfService::makeFile(
+            'pdf.order',
+            $data,
+            'public/orders/',
+            'order' . $order->id . '.pdf'
+        );
+
+        $order->update(['url' => $url]);
+        $order->refresh();
+
         $message = (object)[
             'username' => $username,
             'placed' => $placedBy,
@@ -45,16 +55,6 @@ class OrderObserver
             'place' => $order->info->place->name,
             'url' => $order->url
         ];
-
-        $url = PdfService::makeFile(
-            'pdf.order',
-            $data,
-            'public/orders/',
-            'order' . $order->id . '.pdf'
-        );
-
-        $order->update(['url' => $url]);
-        $order->refresh();
 
         OrderEvent::dispatch($message);
 
