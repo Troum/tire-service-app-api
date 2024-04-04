@@ -25,7 +25,7 @@ class OrderService implements APIInterface
             $items = Order::with(['info', 'info.type', 'user'])->get();
         } else {
             $user_id = request()->user()->id;
-            $items = Order::with(['info', 'info.type'])->where('user_id', $user_id)->get();
+            $items = Order::with(['info', 'info.type'])->where('user_id', $user_id)->orderByDesc('created_at')->get();
         }
 
         return $this->success(new OrderCollection($items));
