@@ -42,7 +42,7 @@ class OrderListener
 
         $updates = TelegramUpdates::create()->get();
 
-        Storage::makeDirectory('orders');
+        Storage::makeDirectory('public/orders');
 
         Pdf::loadView('pdf.order', [
             'orderId' => $event->order->id,
