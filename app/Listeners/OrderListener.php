@@ -54,7 +54,7 @@ class OrderListener
 
         Storage::put('public/orders/' . 'order_' . $event->order->id . '.pdf', $content);
 
-        $url = Storage::url('public/orders/' . 'order_' . $event->order->id . '.pdf');
+        $url = url(Storage::url('public/orders/' . 'order_' . $event->order->id . '.pdf'));
 
         Log::info($url);
 
