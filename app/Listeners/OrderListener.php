@@ -49,7 +49,7 @@ class OrderListener
             'pdf.order',
             $data,
             'public/orders/',
-            'order_' . $event->order->id . '.pdf'
+            'order' . $event->order->id . '.pdf'
         );
 
         Log::info($url);
