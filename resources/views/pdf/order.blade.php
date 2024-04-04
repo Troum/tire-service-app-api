@@ -22,13 +22,14 @@
         .logo_container {
             position: absolute;
             top: 2.5%;
-            left: 5%;
+            left: 50%;
             width: 75px;
             height: 75px;
             border-radius: 50%;
             z-index: 2;
             background-color: #0066FF;
             padding: 15px;
+            transform: translateX(-50%);
         }
 
         .logo_container img {
