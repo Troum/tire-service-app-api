@@ -42,7 +42,7 @@ class OrderListener
 
         $updates = TelegramUpdates::create()->get();
 
-        Pdf::loadView('pdf.order', [
+        $content = Pdf::loadView('pdf.order', [
             'orderId' => $event->order->id,
             'employee' => $event->placedBy,
             'service' => 'шиномонтаж',
@@ -50,7 +50,9 @@ class OrderListener
             'price' => $event->order->info->price * $event->order->amount,
             'name' => $event->order->info->name,
             'address' => $event->order->info->place->address
-        ])->save('storage/public/orders/' . 'order_' . $event->order->id . '.pdf');
+        ])->download()->getOriginalContent();
+
+        Storage::put('public/orders/' . 'order_' . $event->order->id . '.pdf', $content);
 
 
 
