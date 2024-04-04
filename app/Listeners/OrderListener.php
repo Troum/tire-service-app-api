@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use NotificationChannels\Telegram\TelegramUpdates;
 
 class OrderListener
@@ -41,6 +42,8 @@ class OrderListener
 
         $updates = TelegramUpdates::create()->get();
 
+        Storage::makeDirectory('orders');
+
         Pdf::loadView('pdf.order', [
             'orderId' => $event->order->id,
             'employee' => $event->placedBy,
@@ -49,7 +52,7 @@ class OrderListener
             'price' => $event->order->info->price * $event->order->amount,
             'name' => $event->order->info->name,
             'address' => $event->order->info->place->address
-        ])->save('order_' . $event->order->id . '.pdf');
+        ])->save(storage_path('/orders/' . 'order_' . $event->order->id . '.pdf'));
 
 
 
