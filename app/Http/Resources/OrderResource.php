@@ -42,6 +42,7 @@ class OrderResource extends JsonResource
             'period' => $this->getPeriod(),
             'ordered_with_all' => $this->ordered_with_all,
             'date' => $this->created_at,
+            'url' => $this->url,
 
         ];
     }

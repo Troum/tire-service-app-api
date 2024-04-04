@@ -4,6 +4,7 @@ namespace App\Observers;
 use App\Events\OrderEvent;
 use App\Models\Order;
 use App\Services\PdfService;
+use Illuminate\Support\Facades\Storage;
 
 class OrderObserver
 {
@@ -53,7 +54,7 @@ class OrderObserver
             'season' => $order->info->type->season->value,
             'income' => $order->info->price * $order->amount,
             'place' => $order->info->place->name,
-            'url' => $order->url
+            'url' => url($order->url)
         ];
 
         OrderEvent::dispatch($message);
@@ -73,7 +74,7 @@ class OrderObserver
      */
     public function deleted(Order $order): void
     {
-        //
+        Storage::delete($order->url);
     }
 
     /**

@@ -31,6 +31,6 @@ class PdfService
      */
     private static function getFileUrl(string $path): Application|string|UrlGenerator|\Illuminate\Contracts\Foundation\Application
     {
-        return url(Storage::url($path));
+        return Storage::url($path);
     }
 }
