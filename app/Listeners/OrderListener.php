@@ -61,13 +61,19 @@ class OrderListener
 
         if ($updates['ok']) {
             if (Arr::has($updates['result'], 0)) {
-                $chat_id = Arr::get(Arr::last($updates['result']), 'message.chat.id');
+                $chat_ids = [];
 
-                Notification::route('telegram', $chat_id)
-                    ->notify(new AlertNotification($message));
+                foreach ($updates['result'] as $chat) {
+                    $chat_ids[] = Arr::get($chat, 'message.chat.id');
+                }
 
-                Notification::route('telegram', $chat_id)
-                    ->notify(new OrderDocumentAttachNotification($url, 'order_' . $event->order->id . '.pdf'));
+                collect($chat_ids)->unique()->each(function ($id) use ($message, $event, $url) {
+                    Notification::route('telegram', $id)
+                        ->notify(new AlertNotification($message));
+
+                    Notification::route('telegram', $id)
+                        ->notify(new OrderDocumentAttachNotification($url, 'order_' . $event->order->id . '.pdf'));
+                });
             }
         }
 

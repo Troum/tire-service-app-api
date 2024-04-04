@@ -40,6 +40,7 @@ class OrderDocumentAttachNotification extends Notification
     public function toTelegram(): TelegramFile
     {
         return TelegramFile::create()
+            ->content('Документ к заказу')
             ->file($this->url, $this->name);
 
     }
