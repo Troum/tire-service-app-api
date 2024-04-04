@@ -10,17 +10,13 @@ class OrderEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public mixed $order;
-    public string $username;
-    public ?string $placedBy;
+    public mixed $message;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(mixed $order, string $username, mixed $placedBy)
+    public function __construct(mixed $message)
     {
-        $this->order = $order;
-        $this->username = $username;
-        $this->placedBy = $placedBy;
+        $this->message = $message;
     }
 }

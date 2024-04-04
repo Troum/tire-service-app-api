@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $info_id
  * @property int $amount
  * @property string $ordered_with_all
+ * @property string $url
  * @property string $created_at
  * @property-read User $user
  * @property-read Info $info

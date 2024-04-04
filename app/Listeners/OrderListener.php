@@ -29,42 +29,7 @@ class OrderListener
      */
     public function handle(OrderEvent $event): void
     {
-        $event->order->load(['info', 'info.type']);
-
         $updates = TelegramUpdates::create()->get();
-
-        $data = [
-            'orderId' => $event->order->id,
-            'employee' => is_null($event->placedBy) ?
-                $event->username :
-                $event->username . ' и ' . $event->placedBy,
-            'service' => 'шиномонтаж',
-            'count' => $event->order->amount,
-            'price' => $event->order->info->price * $event->order->amount,
-            'name' => $event->order->info->name,
-            'address' => $event->order->info->place->address
-        ];
-
-        $url = PdfService::makeFile(
-            'pdf.order',
-            $data,
-            'public/orders/',
-            'order' . $event->order->id . '.pdf'
-        );
-
-        Log::info($url);
-
-        $message = (object)[
-            'username' => $event->username,
-            'placed' => $event->placedBy,
-            'amount' => $event->order->amount,
-            'name' => $event->order->info->name,
-            'size' => $event->order->info->type->size->size,
-            'season' => $event->order->info->type->season->value,
-            'income' => $event->order->info->price * $event->order->amount,
-            'place' => $event->order->info->place->name,
-            'url' => $url
-        ];
 
         if ($updates['ok']) {
             if (Arr::has($updates['result'], 0)) {
@@ -74,9 +39,9 @@ class OrderListener
                     $chat_ids[] = Arr::get($chat, 'message.chat.id');
                 }
 
-                collect($chat_ids)->unique()->each(function ($id) use ($message, $event) {
+                collect($chat_ids)->unique()->each(function ($id) use ($event) {
                     Notification::route('telegram', $id)
-                        ->notify(new AlertNotification($message));
+                        ->notify(new AlertNotification($event->message));
                 });
             }
         }

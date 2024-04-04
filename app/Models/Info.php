@@ -20,6 +20,7 @@ use function url;
  * @property integer $amount
  * @property float $price
  * @property-read Type $type
+ * @property-read Place $place
  */
 #[ObservedBy([InfoObserver::class])]
 class Info extends Model
