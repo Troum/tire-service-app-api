@@ -32,7 +32,8 @@ class Order extends Model
         'user_id',
         'info_id',
         'amount',
-        'ordered_with_all'
+        'ordered_with_all',
+        'url'
     ];
 
     /**
