@@ -20,7 +20,7 @@ class TypeObserver
      */
     public function updated(Type $type): void
     {
-        broadcast(new UpdateTypeListEvent(Type::select(['id', 'size_id', 'type', 'season'])->get()->toArray()));
+        broadcast(new UpdateTypeListEvent(Type::select(['id', 'size_id', 'type', 'season'])->with(['size', 'info'])->get()->toArray()));
     }
 
     /**
