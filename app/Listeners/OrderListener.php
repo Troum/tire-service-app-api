@@ -4,6 +4,8 @@ namespace App\Listeners;
 
 use App\Events\OrderEvent;
 use App\Notifications\AlertNotification;
+use App\Notifications\OrderDocumentAttachNotification;
+use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -29,6 +31,23 @@ class OrderListener
     {
         $event->order->load(['info', 'info.type']);
 
+        $updates = TelegramUpdates::create()->get();
+
+
+        $data = [
+            'orderId' => $event->order->id,
+            'employee' => is_null($event->placedBy) ?
+                $event->username :
+                $event->username . ' и ' . $event->placedBy,
+            'service' => 'шиномонтаж',
+            'count' => $event->order->amount,
+            'price' => $event->order->info->price * $event->order->amount,
+            'name' => $event->order->info->name,
+            'address' => $event->order->info->place->address
+        ];
+
+        $url = PdfService::makeFile('pdf.order', $data, 'public/orders/', 'order_' . $event->order->id . '.pdf');
+
         $message = (object)[
             'username' => $event->username,
             'placed' => $event->placedBy,
@@ -40,30 +59,15 @@ class OrderListener
             'place' => $event->order->info->place->name
         ];
 
-        $updates = TelegramUpdates::create()->get();
-
-        $content = Pdf::loadView('pdf.order', [
-            'orderId' => $event->order->id,
-            'employee' => $event->placedBy,
-            'service' => 'шиномонтаж',
-            'count' => $event->order->amount,
-            'price' => $event->order->info->price * $event->order->amount,
-            'name' => $event->order->info->name,
-            'address' => $event->order->info->place->address
-        ])->download()->getOriginalContent();
-
-        Storage::put('public/orders/' . 'order_' . $event->order->id . '.pdf', $content);
-
-        $url = url(Storage::url('public/orders/' . 'order_' . $event->order->id . '.pdf'));
-
-        Log::info($url);
-
         if ($updates['ok']) {
             if (Arr::has($updates['result'], 0)) {
                 $chat_id = Arr::get(Arr::last($updates['result']), 'message.chat.id');
 
                 Notification::route('telegram', $chat_id)
                     ->notify(new AlertNotification($message));
+
+                Notification::route('telegram', $chat_id)
+                    ->notify(new OrderDocumentAttachNotification($url, 'order_' . $event->order->id . '.pdf'));
             }
         }
 
