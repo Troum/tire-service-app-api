@@ -14,7 +14,7 @@ trait ResponseHandler
      */
     public function success(mixed $response = null): JsonResponse
     {
-        return response()->json($response ?? ['success' => true]);
+        return response()->json($response ?? ['success' => true])->header('Content-Type', 'image/png');
 
     }
 
