@@ -17,7 +17,7 @@ class QrCodeCast implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return $value;
+        return Barcode::generateBarcodeQr($value);
     }
 
     /**
@@ -29,6 +29,6 @@ class QrCodeCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return Barcode::generateBarcodeQr($value);
+        return $value;
     }
 }
