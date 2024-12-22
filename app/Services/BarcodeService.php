@@ -12,6 +12,6 @@ class BarcodeService
      */
      public function generateBarcodeQr(string $barcode): string
      {
-         return DNS2D::getBarcodePNGPath($barcode, 'DATAMATRIX');
+         return DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
      }
 }
