@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('infos', function (Blueprint $table) {
-            $table->string('qr_code_hash', 256)->nullable();
+            $table->longText('qr_code_hash')->nullable();
         });
     }
 
