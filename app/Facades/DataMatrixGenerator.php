@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @package App\Facades
  * @method static string generateBarcodeQr(string $barcode)
  */
-class Barcode extends Facade
+class DataMatrixGenerator extends Facade
 {
     /**
      * @return string
