@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use Milon\Barcode\Facades\DNS2DFacade as DNS2D;
 
 class BarcodeService
@@ -12,6 +13,7 @@ class BarcodeService
      */
      public function generateBarcodeQr(string $barcode): string
      {
+         Log::error($barcode);
          return DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
      }
 }
