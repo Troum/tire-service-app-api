@@ -38,10 +38,6 @@ class Info extends Model
         'price'
     ];
 
-    protected $casts = [
-      'qr_code_hash' => QrCodeCast::class,
-    ];
-
     /**
      * @return BelongsTo
      */
