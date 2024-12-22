@@ -13,7 +13,6 @@ class BarcodeService
      */
      public function generateBarcodeQr(string $barcode): string
      {
-         Log::error(DNS2D::getBarcodePNG($barcode, 'DATAMATRIX'));
-         return 'data:image/png;base64,' . DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
+         return DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
      }
 }
