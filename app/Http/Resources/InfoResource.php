@@ -23,7 +23,7 @@ class InfoResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->image_url,
-            'qr_code_image' => $this->qr_code_hash,
+            'qr_code_image' => Barcode::generateBarcodeQr($this->qr_code_hash),
             'price' => $this->price,
             'amount' => $this->amount,
             'type' => $this->whenLoaded('type', function () {
