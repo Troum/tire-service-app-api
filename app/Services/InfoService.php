@@ -53,6 +53,7 @@ class InfoService implements APIInterface
                 'type_id' => $request->get('type_id'),
                 'place_id' => $request->get('place_id'),
                 'image_url' => $request->get('image_url'),
+                'qr_code_hash' => $request->get('qr_code_hash'),
                 'name' => $request->get('name'),
                 'amount' => $request->get('amount'),
                 'price' => $request->get('price')

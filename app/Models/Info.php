@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
+use App\Casts\QrCodeCast;
 use App\Observers\InfoObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use function url;
 
 /**
  * @class Info
@@ -17,10 +16,12 @@ use function url;
  * @property integer $type_id
  * @property string $name
  * @property string $image_url
+ * @property string $qr_code_hash
  * @property integer $amount
  * @property float $price
  * @property-read Type $type
  * @property-read Place $place
+ * @method static create(...$params)
  */
 #[ObservedBy([InfoObserver::class])]
 class Info extends Model
@@ -32,8 +33,13 @@ class Info extends Model
         'place_id',
         'name',
         'image_url',
+        'qr_code_hash',
         'amount',
         'price'
+    ];
+
+    protected $casts = [
+      'qr_code_hash' => QrCodeCast::class,
     ];
 
     /**
