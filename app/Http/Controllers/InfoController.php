@@ -36,7 +36,7 @@ class InfoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Info $info): \App\Http\Resources\InfoResource
+    public function show(Info $info): JsonResponse
     {
         return $this->service->getOne($info->load(['type', 'type.size']));
     }

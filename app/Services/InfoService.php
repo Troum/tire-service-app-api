@@ -35,11 +35,11 @@ class InfoService implements APIInterface
 
     /**
      * @param mixed $model
-     * @return InfoResource
+     * @return JsonResponse
      */
-    public function getOne(mixed $model): InfoResource
+    public function getOne(mixed $model): JsonResponse
     {
-        return new InfoResource($model);
+        return $this->success(new InfoResource($model));
     }
 
     /**
