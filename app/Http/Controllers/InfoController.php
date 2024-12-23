@@ -39,8 +39,7 @@ class InfoController extends Controller
      */
     public function show(Info $info): mixed
     {
-//        return $this->service->getOne($info->load(['type', 'type.size']));
-        return new InfoResource($info->load(['type', 'type.size']));
+        return $this->service->getOne($info->load(['type', 'type.size']));
     }
 
     /**
