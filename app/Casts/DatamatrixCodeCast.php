@@ -5,6 +5,7 @@ namespace App\Casts;
 use App\Facades\DataMatrixGenerator;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class DatamatrixCodeCast implements CastsAttributes
 {
@@ -15,7 +16,7 @@ class DatamatrixCodeCast implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        dump($value);
+        Log::error($value);
         return DataMatrixGenerator::generateBarcodeQr($value);
     }
 
