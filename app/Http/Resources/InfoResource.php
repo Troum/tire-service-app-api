@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Facades\DataMatrixGenerator;
 use App\Models\Info;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
