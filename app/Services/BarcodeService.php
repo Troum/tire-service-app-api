@@ -8,10 +8,10 @@ class BarcodeService
 {
     /**
      * @param string $barcode
-     * @return string
+     * @return string|null
      */
-     public function generateBarcodeQr(string $barcode): string
+     public function generateBarcodeQr(string $barcode): ?string
      {
-         return 'data:image/jpeg;base64,' . DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
+         return empty(DNS2D::getBarcodePNG($barcode, 'DATAMATRIX')) ? null : 'data:image/jpeg;base64,' . DNS2D::getBarcodePNG($barcode, 'DATAMATRIX');
      }
 }
