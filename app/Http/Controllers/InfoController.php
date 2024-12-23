@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\InfoResource;
 use App\Models\Info;
 use App\Services\InfoService;
 use Illuminate\Http\JsonResponse;
@@ -36,15 +37,16 @@ class InfoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Info $info): JsonResponse
+    public function show(Info $info): mixed
     {
-        return $this->service->getOne($info->load(['type', 'type.size']));
+//        return $this->service->getOne($info->load(['type', 'type.size']));
+        return new InfoResource($info->load(['type', 'type.size']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Info $info)
+    public function update(Request $request, Info $info): JsonResponse
     {
         return $this->service->update($request, $info);
     }
