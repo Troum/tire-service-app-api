@@ -15,6 +15,7 @@ class DatamatrixCodeCast implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        dd($value);
         return DataMatrixGenerator::generateBarcodeQr($value);
     }
 
