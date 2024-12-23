@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\DatamatrixCodeCast;
 use App\Observers\InfoObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,6 +36,10 @@ class Info extends Model
         'qr_code_hash',
         'amount',
         'price'
+    ];
+
+    protected $casts = [
+        'qr_code_hash' => DatamatrixCodeCast::class,
     ];
 
     /**
