@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $type_id
  * @property string $name
  * @property string $image_url
- * @property string $qr_code_hash
+ * @property string $codes
  * @property integer $amount
  * @property float $price
  * @property-read Type $type
@@ -33,13 +33,13 @@ class Info extends Model
         'place_id',
         'name',
         'image_url',
-        'qr_code_hash',
+        'codes',
         'amount',
         'price'
     ];
 
     protected $casts = [
-        'qr_code_hash' => DatamatrixCodeCast::class,
+        'codes' => DatamatrixCodeCast::class,
     ];
 
     /**

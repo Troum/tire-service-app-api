@@ -5,7 +5,7 @@ namespace App\Casts;
 use App\Facades\DataMatrixGenerator;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class DatamatrixCodeCast implements CastsAttributes
 {
@@ -14,10 +14,13 @@ class DatamatrixCodeCast implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function get(Model $model, string $key, mixed $value, array $attributes): array
     {
-        Log::error(DataMatrixGenerator::generateBarcodeQr($value));
-        return DataMatrixGenerator::generateBarcodeQr($value);
+        $value = json_decode($value, false);
+
+        return array_map(function ($item) {
+            return DataMatrixGenerator::generateBarcodeQr($item);
+        }, $value);
     }
 
     /**
@@ -25,8 +28,9 @@ class DatamatrixCodeCast implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function set(Model $model, string $key, mixed $value, array $attributes): string|false
     {
-        return $value;
+        $value = explode(',', Str::of($value)->replace(' ',''));
+        return json_encode($value);
     }
 }
