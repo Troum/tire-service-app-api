@@ -20,7 +20,7 @@ class InfoObserver
      */
     public function updated(Info $info): void
     {
-        broadcast(new UpdateInfoListEvent(Info::with('type')->get()->toArray()));
+        broadcast(new UpdateInfoListEvent());
     }
 
     /**

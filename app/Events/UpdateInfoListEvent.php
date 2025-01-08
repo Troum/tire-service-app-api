@@ -14,15 +14,10 @@ class UpdateInfoListEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public array $infos;
-
     /**
      * Create a new event instance.
      */
-    public function __construct(array $infos)
-    {
-        $this->infos = $infos;
-    }
+    public function __construct(){}
 
     /**
      * Get the channels the event should broadcast on.
@@ -34,14 +29,6 @@ class UpdateInfoListEvent implements ShouldBroadcast
         return [
             new Channel('update'),
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function broadcastWith(): array
-    {
-        return $this->infos;
     }
 
     /**
