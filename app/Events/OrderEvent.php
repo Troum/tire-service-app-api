@@ -19,4 +19,12 @@ class OrderEvent
     {
         $this->message = $message;
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }

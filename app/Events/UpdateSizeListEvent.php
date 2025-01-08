@@ -52,4 +52,12 @@ class UpdateSizeListEvent implements ShouldBroadcast
     {
         return 'update.size.list';
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }

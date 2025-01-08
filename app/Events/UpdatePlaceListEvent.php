@@ -51,4 +51,12 @@ class UpdatePlaceListEvent implements ShouldBroadcast
     {
         return 'update.place.list';
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }

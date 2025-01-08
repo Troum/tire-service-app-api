@@ -51,4 +51,12 @@ class UpdateInfoListEvent implements ShouldBroadcast
     {
         return 'update.info.list';
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }

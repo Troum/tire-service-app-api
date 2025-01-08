@@ -51,4 +51,12 @@ class UpdateTypeListEvent implements ShouldBroadcast
     {
         return 'update.type.list';
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }

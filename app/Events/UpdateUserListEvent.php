@@ -51,4 +51,12 @@ class UpdateUserListEvent implements ShouldBroadcast
     {
         return 'update.user.list';
     }
+
+    /**
+     * @return string
+     */
+    public function broadcastQueue(): string
+    {
+        return 'reverb';
+    }
 }
