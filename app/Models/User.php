@@ -21,6 +21,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read Role $roles
  * @property-read Place $places
  * @property-read Order $history
+ * @method static select(...$params)
  */
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable

@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $created_at
  * @property-read User $user
  * @property-read Info $info
+ * @method static create(...$params)
  */
 #[ObservedBy([OrderObserver::class])]
 class Order extends Model

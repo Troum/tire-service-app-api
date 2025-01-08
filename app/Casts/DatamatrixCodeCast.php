@@ -19,7 +19,10 @@ class DatamatrixCodeCast implements CastsAttributes
         $value = json_decode($value, false);
 
         return array_map(function ($item) {
-            return DataMatrixGenerator::generateBarcodeQr($item);
+            return [
+                'id' => $item->id,
+                'code' => DataMatrixGenerator::generateBarcodeQr($item->code),
+            ];
         }, $value);
     }
 
@@ -30,7 +33,15 @@ class DatamatrixCodeCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string|false
     {
-        $value = explode(',', Str::of($value)->replace(' ',''));
+        if (!is_array($value)) {
+            $value = explode(',', Str::of($value)->replace(' ',''));
+            $value = array_map(function ($item) {
+                return [
+                    'id' => Str::uuid(),
+                    'code' => $item,
+                ];
+            }, $value);
+        }
         return json_encode($value);
     }
 }

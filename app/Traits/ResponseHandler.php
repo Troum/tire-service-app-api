@@ -39,4 +39,12 @@ trait ResponseHandler
         return response()->json($response ?? ['success' => false], 409);
 
     }
+
+    /**
+     * @return mixed
+     */
+    private function getAuthorizedUserId(): mixed
+    {
+        return request()->user()->id;
+    }
 }

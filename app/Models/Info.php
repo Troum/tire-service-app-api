@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\DatamatrixCodeCast;
 use App\Observers\InfoObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Type $type
  * @property-read Place $place
  * @method static create(...$params)
+ * @method static find(...$params)
  */
 #[ObservedBy([InfoObserver::class])]
 class Info extends Model
@@ -42,6 +44,10 @@ class Info extends Model
         'codes' => DatamatrixCodeCast::class,
     ];
 
+    protected $appends = [
+        'original'
+    ];
+
     /**
      * @return BelongsTo
      */
@@ -56,5 +62,15 @@ class Info extends Model
     public function place(): BelongsTo
     {
         return $this->belongsTo(Place::class, 'place_id', 'id');
+    }
+
+    /**
+     * @return Attribute
+     */
+    protected function original(): Attribute
+    {
+        return new Attribute(
+            get: fn () => collect(json_decode($this->getRawOriginal('codes')))
+        );
     }
 }
