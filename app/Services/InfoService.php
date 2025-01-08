@@ -71,7 +71,8 @@ class InfoService implements APIInterface
         try {
             $info->update([
                 'amount' => $request->get('amount'),
-                'price' => $request->get('price')
+                'price' => $request->get('price'),
+                'codes' => $request->get('codes'),
             ]);
 
             return $this->success(['message' => 'Информация была успешно обновлена']);

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $codes
  * @property integer $amount
  * @property float $price
+ * @property mixed $original
  * @property-read Type $type
  * @property-read Place $place
  * @method static create(...$params)

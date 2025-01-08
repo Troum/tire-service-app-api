@@ -22,7 +22,9 @@ class InfoResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->image_url,
-            'qr_code_images' => $this->codes,
+            'qr_code_images' => $this->when($request->is('infos/*'), function () {
+                return $this->codes;
+            }, $this->original),
             'price' => $this->price,
             'amount' => $this->amount,
             'type' => $this->whenLoaded('type', function () {
