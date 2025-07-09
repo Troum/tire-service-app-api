@@ -40,10 +40,10 @@ class DatamatrixService implements APIInterface
     public function store(Request $request): JsonResponse
     {
         try {
-            $parts = preg_split('/\s*,\s*/', $request->get('codes'));
+            $parts = preg_split('/\s*(?:,|\R)\s*/', $request->get('codes'));
             $codes = array_filter(
                 array_map('trim', $parts),
-                fn($val) => $val !== ''
+                fn($v) => $v !== ''
             );
 
             if (empty($codes)) {
