@@ -14,7 +14,8 @@
         "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",
         "milon/barcode": "^11.0",
-        "pusher/pusher-php-server": "^7.2"
+        "pusher/pusher-php-server": "^7.2",
+      "ext-zip": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

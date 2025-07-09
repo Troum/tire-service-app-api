@@ -14,4 +14,13 @@ class BarcodeService
      {
          return DNS2D::getBarcodeHTML($barcode, 'QRCODE', 7, 7);
      }
+
+    /**
+     * @param string $barcode
+     * @return false|string
+     */
+     public function generateDatamatrix(string $barcode): false|string
+     {
+         return DNS2D::getBarcodePNG($barcode, 'DATAMATRIX', 10, 10);
+     }
 }

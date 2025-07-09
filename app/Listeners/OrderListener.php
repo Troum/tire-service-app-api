@@ -4,13 +4,9 @@ namespace App\Listeners;
 
 use App\Events\OrderEvent;
 use App\Notifications\AlertNotification;
-use App\Notifications\OrderDocumentAttachNotification;
-use App\Services\PdfService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
+use JsonException;
 use NotificationChannels\Telegram\TelegramUpdates;
 
 class OrderListener
@@ -25,7 +21,7 @@ class OrderListener
 
     /**
      * Handle the event.
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function handle(OrderEvent $event): void
     {

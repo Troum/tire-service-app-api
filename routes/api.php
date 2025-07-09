@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DatamatrixController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\OrderController;
@@ -24,7 +25,8 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'auth'], function () {
         'sizes' => SizeController::class,
         'types' => TypeController::class,
         'infos' => InfoController::class,
-        'orders' => OrderController::class
+        'orders' => OrderController::class,
+        'datamatrix' => DatamatrixController::class
     ]);
 
     Route::get('roles', [RoleController::class, 'index']);
