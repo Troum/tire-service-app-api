@@ -42,8 +42,8 @@ class DatamatrixListener
 
             $w = $img->width() * 1.5;
             $h = $img->height() * 1.35;
-            $fontSize = 20;
-            $padding  = 15;
+            $fontSize = 18;
+            $padding  = 25;
             $textHeight = $fontSize * 1.25;
 
             $canvas = Image::create($w, $h + $textHeight + $padding)->fill('#ffffff');
