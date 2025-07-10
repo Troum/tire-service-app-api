@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\DatamatrixObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed $codes
  * @property string $url
  */
+#[ObservedBy([DatamatrixObserver::class])]
 class Datamatrix extends Model
 {
     /**

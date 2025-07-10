@@ -3,12 +3,10 @@
 namespace App\Providers;
 
 use App\Events\DatamatrixCreatedEvent;
-use App\Events\OrderEvent;
 use App\Events\UpdateInfoEvent;
 use App\Events\UpdateSizeListEvent;
 use App\Events\UpdateTypeListEvent;
 use App\Listeners\DatamatrixListener;
-use App\Listeners\OrderListener;
 use App\Listeners\UpdateInfoListener;
 use App\Listeners\UpdateSizeListListener;
 use App\Listeners\UpdateTypeListListener;

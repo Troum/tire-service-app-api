@@ -68,4 +68,19 @@ class DatamatrixService implements APIInterface
             return $this->error($exception);
         }
     }
+
+    /**
+     * @param Datamatrix $model
+     * @return JsonResponse
+     */
+    public function deleteOne(Datamatrix $model): JsonResponse
+    {
+        try {
+            $model->delete();
+            Datamatrix::query()->get();
+            return $this->success(new DatamatrixCollection(Datamatrix::query()->get(['id', 'tireName', 'url'])));
+        } catch (Exception $exception) {
+            return $this->error($exception);
+        }
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Datamatrix;
 use App\Services\DatamatrixService;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class DatamatrixController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Datamatrix $datamatrix)
     {
         //
     }
@@ -46,8 +47,8 @@ class DatamatrixController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Datamatrix $datamatrix)
     {
-        //
+        return $this->service->deleteOne($datamatrix);
     }
 }
