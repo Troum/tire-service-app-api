@@ -51,7 +51,7 @@ class DatamatrixListener
             $canvas->place($img, 'top', 0, 20);
 
             $canvas->text($dm->tireName, $w/2, $h - $padding, function($font) use ($img) {
-                $font->file(public_path('fonts/arial/arialmt.ttf'));
+                $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
                 $font->size(28);
                 $font->align('center');
                 $font->valign('middle');
