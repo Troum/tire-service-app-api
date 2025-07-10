@@ -41,7 +41,7 @@ class DatamatrixListener
             $img = Image::read(base64_decode($pngBase64));
 
             $w = $img->width() * 1.5;
-            $h = $img->height() * 1.25;
+            $h = $img->height() * 1.35;
             $fontSize = 20;
             $padding  = 15;
             $textHeight = $fontSize * 1.25;
