@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\DatamatrixCreatedEvent;
 use App\Events\DatamatrixReadyEvent;
 use App\Facades\DataMatrixGenerator;
-use Intervention\Image\ImageManager as Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -38,7 +38,7 @@ class DatamatrixListener
                 continue;
             }
 
-            $img = Image::imagick()->read(base64_decode($pngBase64));
+            $img = Image::read(base64_decode($pngBase64));
 
             $w = $img->width() * 1.5;
             $h = $img->height() * 1.25;
@@ -46,7 +46,7 @@ class DatamatrixListener
             $padding  = 15;
             $textHeight = $fontSize * 1.25;
 
-            $canvas = Image::imagick()->create($w, $h + $textHeight + $padding)->fill('#ffffff');
+            $canvas = Image::create($w, $h + $textHeight + $padding)->fill('#ffffff');
 
             $canvas->place($img, 'top', 0, 20);
 
