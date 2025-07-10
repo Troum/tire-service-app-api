@@ -27,7 +27,7 @@ class DatamatrixListener
     {
         $dm = $event->datamatrix;
 
-        $tempDir = storage_path("app/temp/datamatrix/{$dm->id}");
+        $tempDir = storage_path("app/temp/datamatrix/{$dm->zipName}");
         if (!file_exists($tempDir)) {
             mkdir($tempDir, 0755, true);
         }
@@ -43,7 +43,7 @@ class DatamatrixListener
             );
         }
 
-        $zipName = "{$dm->id}.zip";
+        $zipName = $dm->zipName;
         $zipPath = storage_path("app/public/datamatrix/{$zipName}");
         Storage::makeDirectory('public/datamatrix');
 
