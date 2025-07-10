@@ -21,7 +21,14 @@ class DatamatrixService implements APIInterface
      */
     public function getAll(): JsonResponse
     {
-        return $this->success(new DatamatrixCollection(Datamatrix::query()->get(['id', 'tireName', 'url'])));
+        return $this->success(
+            new DatamatrixCollection(
+                Datamatrix::query()
+                    ->orderBy('created_at', 'DESC')
+                    ->get(['id', 'tireName', 'url']
+                    )
+            ),
+        );
     }
 
     /**
