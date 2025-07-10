@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Datamatrix;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class DatamatrixObserver
@@ -28,7 +29,9 @@ class DatamatrixObserver
      */
     public function deleted(Datamatrix $datamatrix): void
     {
-        Storage::delete(storage_path('app/public/datamatrix/' . $datamatrix->id . '.zip'));
+        if (File::exists(storage_path('app/public/datamatrix/' . $datamatrix->id . '.zip'))) {
+            File::delete(storage_path('app/public/datamatrix/' . $datamatrix->id . '.zip'));
+        }
     }
 
     /**
