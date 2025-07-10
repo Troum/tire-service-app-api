@@ -68,7 +68,7 @@ class DatamatrixService implements APIInterface
             return $this->success([
                 'success' => true,
                 'id'      => $datamatrix->id,
-                'message' => 'Генерация запущена, вы получите WebSocket-уведомление, когда архив будет готов.',
+                'message' => 'Генерация запущена, данные обновятся, когда архив будет готов.',
             ]);
 
         } catch (Exception $exception) {
