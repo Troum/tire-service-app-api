@@ -85,7 +85,7 @@ class DatamatrixService implements APIInterface
         try {
             $model->delete();
             Datamatrix::query()->get();
-            return $this->success(new DatamatrixCollection(Datamatrix::query()->get(['id', 'tireName', 'url'])));
+            return $this->getAll();
         } catch (Exception $exception) {
             return $this->error($exception);
         }
