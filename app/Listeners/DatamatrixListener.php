@@ -31,37 +31,82 @@ class DatamatrixListener
             mkdir($tempDir, 0755, true);
         }
 
-        foreach ($dm->codes as $code) {
-            $pngBase64 = DataMatrixGenerator::generateDatamatrix($code);
+        // эталонная высота DataMatrix, при которой шрифты 64 и 22 выглядят хорошо
+        $refHeight = 200;
 
+        foreach ($dm->codes as $code) {
+            // 1) Генерируем DataMatrix
+            $pngBase64 = DataMatrixGenerator::generateDatamatrix($code);
             if ($pngBase64 === false) {
                 continue;
             }
 
+            // 2) Читаем картинку
             $img = Image::read(base64_decode($pngBase64));
+            $origW = $img->width();
+            $origH = $img->height();
 
-            $w = $img->width() * 1.5;
-            $h = $img->height() * 1.5;
-            $fontSize = 28;
-            $padding  = 5;
-            $textHeight = $fontSize * 1.25;
+            // 3) Вычисляем коэффициент масштаба относительно эталонной высоты
+            $scale = $origH / $refHeight;
 
-            $canvas = Image::create($w, $h + $textHeight + $padding)->fill('#ffffff');
+            // 4) Динамические размеры шрифтов (минимум 12px и 10px соответственно)
+            $codeFontSize = max(12, (int)round(48 * $scale));
+            $nameFontSize = max(10, (int)round(22 * $scale));
 
-            $canvas->place($img, 'top', 0, 20);
+            // 5) Line-height для каждого текста
+            $codeLineHeight = $codeFontSize * 2;
+            $nameLineHeight = $nameFontSize * 1.25;
 
-            $canvas->text($dm->tireName, $w/2, $h - $padding, function($font) use ($img) {
+            // 6) Паддинг вокруг текста
+            $padding = 5 * $scale;
+
+            // 7) Итоговые размеры холста
+            //    — делаем квадрат чуть больше для матрицы: *1.5
+            //    — ниже добавляем место для двух строк текста + паддинг
+            $canvasW = $origW * 1.5;
+            $canvasH = $origH * 1.5 + $codeLineHeight + $nameLineHeight + $padding * 2;
+
+            // 8) Создаём белый холст нужного размера
+            $canvas = Image::create($canvasW, $canvasH)->fill('#ffffff');
+
+            // 9) Вставляем DataMatrix сверху с небольшим отступом
+            $canvas->place($img, 'top', 0, (int)$padding + 5);
+
+            // 10) Позиции Y для двух текстов
+            // Код шины — примерно на 60% от высоты оригинальной матрицы
+            $yCode = $origH * 1.25;
+            // Название — чуть ниже нижнего края матрицы
+            $yName = $origH * 1.65 + $nameLineHeight / 2;
+
+            // 11) Рисуем код шины
+            $canvas->text($dm->tireCode, $canvasW / 2, $yCode, function($font) use (
+                $codeFontSize, $origW
+            ) {
                 $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
-                $font->size(28);
+                $font->size($codeFontSize);
+                $font->align('center');
+                $font->valign('middle');
+                $font->lineHeight(2.5);
+                $font->wrap($origW);
+            });
+
+            // 12) Рисуем название шины
+            $canvas->text($dm->tireName, $canvasW / 2, $yName, function($font) use (
+                $nameFontSize, $origW
+            ) {
+                $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
+                $font->size($nameFontSize);
                 $font->align('center');
                 $font->valign('middle');
                 $font->lineHeight(1.45);
-                $font->wrap($img->width());
+                $font->wrap($origW);
             });
 
+            // 13) Сохраняем PNG
             $canvas->save("{$tempDir}/{$code}.png");
         }
 
+        // Создаем zip со всеми картинками
         $zipName = $dm->zipName;
         $zipPath = storage_path("app/public/datamatrix/{$zipName}");
         Storage::makeDirectory('public/datamatrix');
@@ -69,14 +114,18 @@ class DatamatrixListener
         $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
             foreach (scandir($tempDir) as $file) {
-                if (in_array($file, ['.', '..'])) continue;
+                if (in_array($file, ['.', '..'])) {
+                    continue;
+                }
                 $zip->addFile("{$tempDir}/{$file}", $file);
             }
             $zip->close();
         }
 
+        // Удаляем временную папку
         $this->deleteDirectory($tempDir);
 
+        // Сохраняем URL и шлём эвент «готово»
         $dm->url = Storage::url("public/datamatrix/{$zipName}");
         $dm->save();
 

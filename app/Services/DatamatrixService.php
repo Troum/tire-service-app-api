@@ -59,6 +59,7 @@ class DatamatrixService implements APIInterface
 
             $datamatrix = Datamatrix::create([
                 'tireName' => $request->get('tireName'),
+                'tireCode' => $request->get('tireCode'),
                 'codes'    => $codes,
                 'url'      => null,
             ]);

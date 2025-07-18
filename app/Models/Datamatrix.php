@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
  * @package App\Models
  * @property int $id
  * @property string $tireName
+ * @property string $tireCode
  * @property string $zipName
  * @property mixed $codes
  * @property string $url
@@ -30,6 +31,7 @@ class Datamatrix extends Model
      */
     protected $fillable = [
       'tireName',
+      'tireCode',
       'codes',
       'url'
     ];
