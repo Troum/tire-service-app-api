@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\DatamatrixCreatedEvent;
 use App\Events\DatamatrixReadyEvent;
 use App\Facades\DataMatrixGenerator;
+use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
@@ -50,48 +51,56 @@ class DatamatrixListener
             $scale = $origH / $refHeight;
 
             // 4) Динамические размеры шрифтов (минимум 12px и 10px соответственно)
-            $codeFontSize = max(12, (int)round(48 * $scale));
+            $codeFontSize = max(12, (int)round(48 * $scale / 1.9)); // Уменьшен в 1.9 раза
             $nameFontSize = max(10, (int)round(22 * $scale));
 
             // 5) Line-height для каждого текста
-            $codeLineHeight = $codeFontSize * 2;
+            $codeLineHeight = $codeFontSize * 1.5; // Уменьшен межстрочный интервал
             $nameLineHeight = $nameFontSize * 1.25;
 
             // 6) Паддинг вокруг текста
             $padding = 5 * $scale;
 
-            // 7) Итоговые размеры холста
-            //    — делаем квадрат чуть больше для матрицы: *1.5
-            //    — ниже добавляем место для двух строк текста + паддинг
-            $canvasW = $origW * 1.5;
-            $canvasH = $origH * 1.5 + $codeLineHeight + $nameLineHeight + $padding * 2;
+            // 7) Рассчитываем реальную потребность в пространстве
+            $textBlocksHeight = 0;
+            $yPositions = [];
 
-            // 8) Создаём белый холст нужного размера
+            if ($dm->tireCode) {
+                $textBlocksHeight += $codeLineHeight + $padding * 1.5; // Увеличен отступ
+                $yPositions['code'] = $origH * 1.35; // Увеличен отступ сверху
+            }
+
+            $textBlocksHeight += $nameLineHeight + $padding * 2; // Добавлен дополнительный отступ
+            $yPositions['name'] = $dm->tireCode
+                ? $origH * 1.7 + $nameLineHeight / 2  // Немного уменьшено расстояние
+                : $origH * 1.25 + $nameLineHeight / 2;  // Поднимаем выше при отсутствии кода
+
+            // Обновляем размер холста
+            $canvasW = $origW * 1.5;
+            $canvasH = $origH * 1.5 + $textBlocksHeight + $padding * 1.4; // Добавлен отступ снизу
+
+            // 8) Создаём белый холст обновлённого размера
             $canvas = Image::create($canvasW, $canvasH)->fill('#ffffff');
 
             // 9) Вставляем DataMatrix сверху с небольшим отступом
             $canvas->place($img, 'top', 0, (int)$padding + 5);
 
-            // 10) Позиции Y для двух текстов
-            // Код шины — примерно на 60% от высоты оригинальной матрицы
-            $yCode = $origH * 1.25;
-            // Название — чуть ниже нижнего края матрицы
-            $yName = $origH * 1.65 + $nameLineHeight / 2;
+            // 10) Рисуем код шины (если есть)
+            if ($dm->tireCode) {
+                $canvas->text($dm->tireCode, $canvasW / 2, $yPositions['code'], function($font) use (
+                    $codeFontSize, $origW
+                ) {
+                    $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
+                    $font->size($codeFontSize);
+                    $font->align('center');
+                    $font->valign('middle');
+                    $font->lineHeight(1.8); // Уменьшен межстрочный интервал
+                    $font->wrap($origW);
+                });
+            }
 
-            // 11) Рисуем код шины
-            $canvas->text($dm->tireCode, $canvasW / 2, $yCode, function($font) use (
-                $codeFontSize, $origW
-            ) {
-                $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
-                $font->size($codeFontSize);
-                $font->align('center');
-                $font->valign('middle');
-                $font->lineHeight(2.5);
-                $font->wrap($origW);
-            });
-
-            // 12) Рисуем название шины
-            $canvas->text($dm->tireName, $canvasW / 2, $yName, function($font) use (
+            // 11) Рисуем название шины
+            $canvas->text($dm->tireName, $canvasW / 2, $yPositions['name'], function($font) use (
                 $nameFontSize, $origW
             ) {
                 $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
@@ -103,12 +112,14 @@ class DatamatrixListener
             });
 
             // 13) Сохраняем PNG
-            $canvas->save("{$tempDir}/{$code}.png");
+            $name = Str::of($code)->slug();
+            $canvas->save("{$tempDir}/{$name}.png");
         }
 
         // Создаем zip со всеми картинками
         $zipName = $dm->zipName;
         $zipPath = storage_path("app/public/datamatrix/{$zipName}");
+
         Storage::makeDirectory('public/datamatrix');
 
         $zip = new ZipArchive;
