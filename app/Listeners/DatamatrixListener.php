@@ -80,15 +80,15 @@ class DatamatrixListener
                 $yPositions = [];
 
                 if ($dm->tireCode) {
-                    $textBlocksHeight += $codeLineHeight + $padding;
-                    $yPositions['code'] = $origH + $padding + $codeLineHeight / 2;
+                    $textBlocksHeight += $codeLineHeight + $padding * 1.5;
+                    $yPositions['code'] = $origH + $padding * 1.5 + $codeLineHeight / 2;
                 }
 
                 if ($dm->tireName) {
-                    $textBlocksHeight += $nameLineHeight + $padding;
+                    $textBlocksHeight += $nameLineHeight + $padding * 1.5;
                     $yPositions['name'] = $dm->tireCode
-                        ? $yPositions['code'] + $codeLineHeight / 2 + $padding + $nameLineHeight / 2
-                        : $origH + $padding + $nameLineHeight / 2;
+                        ? $yPositions['code'] + $codeLineHeight / 2 + $padding * 1.5 + $nameLineHeight / 2
+                        : $origH + $padding * 1.5 + $nameLineHeight / 2;
                 }
 
                 // Обновляем размер холста
