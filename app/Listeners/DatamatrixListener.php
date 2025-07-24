@@ -59,7 +59,7 @@ class DatamatrixListener
                 
                 // Вычисляем размер шрифта в зависимости от длины текста
                 $codeLength = $dm->tireCode ? strlen($dm->tireCode) : 0;
-                $nameLength = strlen($dm->tireName);
+                $nameLength = $dm->tireName ? strlen($dm->tireName) : 0;
                 
                 // Коэффициент уменьшения размера шрифта в зависимости от длины
                 $codeReductionFactor = min(1, 30 / max($codeLength, 1)); // Оптимальная длина ~30 символов
@@ -84,10 +84,12 @@ class DatamatrixListener
                     $yPositions['code'] = $origH + $padding + $codeLineHeight / 2;
                 }
 
-                $textBlocksHeight += $nameLineHeight + $padding;
-                $yPositions['name'] = $dm->tireCode
-                    ? $yPositions['code'] + $codeLineHeight / 2 + $padding + $nameLineHeight / 2
-                    : $origH + $padding + $nameLineHeight / 2;
+                if ($dm->tireName) {
+                    $textBlocksHeight += $nameLineHeight + $padding;
+                    $yPositions['name'] = $dm->tireCode
+                        ? $yPositions['code'] + $codeLineHeight / 2 + $padding + $nameLineHeight / 2
+                        : $origH + $padding + $nameLineHeight / 2;
+                }
 
                 // Обновляем размер холста
                 $canvasW = max($origW, $origW * 1.2); // Немного шире для длинного текста
@@ -102,7 +104,7 @@ class DatamatrixListener
                 // 10) Рисуем код шины (если есть)
                 if ($dm->tireCode) {
                     $canvas->text($dm->tireCode, $canvasW / 2, $yPositions['code'], function($font) use (
-                        $codeFontSize, $canvasW
+                        $codeFontSize, $canvasW, $padding
                     ) {
                         $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
                         $font->size($codeFontSize);
@@ -114,16 +116,18 @@ class DatamatrixListener
                 }
 
                 // 11) Рисуем название шины
-                $canvas->text($dm->tireName, $canvasW / 2, $yPositions['name'], function($font) use (
-                    $nameFontSize, $canvasW, $padding
-                ) {
-                    $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
-                    $font->size($nameFontSize);
-                    $font->align('center');
-                    $font->valign('middle');
-                    $font->lineHeight(1.2);
-                    $font->wrap($canvasW - $padding * 2);
-                });
+                if ($dm->tireName) {
+                    $canvas->text($dm->tireName, $canvasW / 2, $yPositions['name'], function($font) use (
+                        $nameFontSize, $canvasW, $padding
+                    ) {
+                        $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
+                        $font->size($nameFontSize);
+                        $font->align('center');
+                        $font->valign('middle');
+                        $font->lineHeight(1.2);
+                        $font->wrap($canvasW - $padding * 2);
+                    });
+                }
 
                 // 13) Сохраняем PNG
                 $name = Str::of($code)->slug();
