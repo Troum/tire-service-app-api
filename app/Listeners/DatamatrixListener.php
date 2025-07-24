@@ -80,49 +80,49 @@ class DatamatrixListener
                 $yPositions = [];
 
                 if ($dm->tireCode) {
-                    $textBlocksHeight += $codeLineHeight + $padding * 1.5; // Увеличен отступ
-                    $yPositions['code'] = $origH * 1.35; // Увеличен отступ сверху
+                    $textBlocksHeight += $codeLineHeight + $padding;
+                    $yPositions['code'] = $origH + $padding + $codeLineHeight / 2;
                 }
 
-                $textBlocksHeight += $nameLineHeight + $padding * 2; // Добавлен дополнительный отступ
+                $textBlocksHeight += $nameLineHeight + $padding;
                 $yPositions['name'] = $dm->tireCode
-                    ? $origH * 1.9 + $nameLineHeight / 2  // Увеличен отступ между кодом и названием
-                    : $origH * 1.4 + $nameLineHeight / 2;  // Увеличен отступ при отсутствии кода
+                    ? $yPositions['code'] + $codeLineHeight / 2 + $padding + $nameLineHeight / 2
+                    : $origH + $padding + $nameLineHeight / 2;
 
                 // Обновляем размер холста
-                $canvasW = $origW * 1.5;
-                $canvasH = $origH * 1.5 + $textBlocksHeight + $padding * 2; // Увеличен отступ снизу для tireName
+                $canvasW = max($origW, $origW * 1.2); // Немного шире для длинного текста
+                $canvasH = $origH + $textBlocksHeight + $padding * 2;
 
                 // 8) Создаём белый холст обновлённого размера
                 $canvas = Image::create($canvasW, $canvasH)->fill('#ffffff');
 
                 // 9) Вставляем DataMatrix сверху с небольшим отступом
-                $canvas->place($img, 'top', 0, (int)$padding + 5);
+                $canvas->place($img, 'top', 0, (int)$padding);
 
                 // 10) Рисуем код шины (если есть)
                 if ($dm->tireCode) {
                     $canvas->text($dm->tireCode, $canvasW / 2, $yPositions['code'], function($font) use (
-                        $codeFontSize, $origW
+                        $codeFontSize, $canvasW
                     ) {
                         $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
                         $font->size($codeFontSize);
                         $font->align('center');
                         $font->valign('middle');
-                        $font->lineHeight(1.8); // Уменьшен межстрочный интервал
-                        $font->wrap($origW);
+                        $font->lineHeight(1.2);
+                        $font->wrap($canvasW - $padding * 2);
                     });
                 }
 
                 // 11) Рисуем название шины
                 $canvas->text($dm->tireName, $canvasW / 2, $yPositions['name'], function($font) use (
-                    $nameFontSize, $origW
+                    $nameFontSize, $canvasW, $padding
                 ) {
                     $font->file(public_path('fonts/dejavu-sans/ttf/DejaVuSansCondensed.ttf'));
                     $font->size($nameFontSize);
                     $font->align('center');
                     $font->valign('middle');
-                    $font->lineHeight(1.45);
-                    $font->wrap($origW);
+                    $font->lineHeight(1.2);
+                    $font->wrap($canvasW - $padding * 2);
                 });
 
                 // 13) Сохраняем PNG
