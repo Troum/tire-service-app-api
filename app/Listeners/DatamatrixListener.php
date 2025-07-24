@@ -52,9 +52,21 @@ class DatamatrixListener
                 // 3) Вычисляем коэффициент масштаба относительно эталонной высоты
                 $scale = $origH / $refHeight;
 
-                // 4) Динамические размеры шрифтов (минимум 12px и 10px соответственно)
-                $codeFontSize = max(12, (int)round(48 * $scale / 1.9)); // Уменьшен в 1.9 раза
-                $nameFontSize = max(10, (int)round(22 * $scale));
+                // 4) Динамические размеры шрифтов в зависимости от длины текста
+                // Базовые размеры шрифтов (минимум 10px и 8px соответственно)
+                $baseCodeFontSize = max(10, (int)round(48 * $scale / 1.9));
+                $baseNameFontSize = max(8, (int)round(22 * $scale));
+                
+                // Вычисляем размер шрифта в зависимости от длины текста
+                $codeLength = $dm->tireCode ? strlen($dm->tireCode) : 0;
+                $nameLength = strlen($dm->tireName);
+                
+                // Коэффициент уменьшения размера шрифта в зависимости от длины
+                $codeReductionFactor = min(1, 30 / max($codeLength, 1)); // Оптимальная длина ~30 символов
+                $nameReductionFactor = min(1, 40 / max($nameLength, 1)); // Оптимальная длина ~40 символов
+                
+                $codeFontSize = max(10, (int)round($baseCodeFontSize * $codeReductionFactor));
+                $nameFontSize = max(8, (int)round($baseNameFontSize * $nameReductionFactor));
 
                 // 5) Line-height для каждого текста
                 $codeLineHeight = $codeFontSize * 1.5; // Уменьшен межстрочный интервал
@@ -74,12 +86,12 @@ class DatamatrixListener
 
                 $textBlocksHeight += $nameLineHeight + $padding * 2; // Добавлен дополнительный отступ
                 $yPositions['name'] = $dm->tireCode
-                    ? $origH * 1.7 + $nameLineHeight / 2  // Немного уменьшено расстояние
-                    : $origH * 1.25 + $nameLineHeight / 2;  // Поднимаем выше при отсутствии кода
+                    ? $origH * 1.9 + $nameLineHeight / 2  // Увеличен отступ между кодом и названием
+                    : $origH * 1.4 + $nameLineHeight / 2;  // Увеличен отступ при отсутствии кода
 
                 // Обновляем размер холста
                 $canvasW = $origW * 1.5;
-                $canvasH = $origH * 1.5 + $textBlocksHeight + $padding * 1.4; // Добавлен отступ снизу
+                $canvasH = $origH * 1.5 + $textBlocksHeight + $padding * 2; // Увеличен отступ снизу для tireName
 
                 // 8) Создаём белый холст обновлённого размера
                 $canvas = Image::create($canvasW, $canvasH)->fill('#ffffff');
