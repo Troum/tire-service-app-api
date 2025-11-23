@@ -36,6 +36,7 @@ class DatamatrixListener
 
             // эталонная высота DataMatrix, при которой шрифты 64 и 22 выглядят хорошо
             $refHeight = 200;
+            $generatedImages = [];
 
             foreach ($dm->codes as $code) {
                 // 1) Генерируем DataMatrix
@@ -131,8 +132,12 @@ class DatamatrixListener
 
                 // 13) Сохраняем PNG
                 $name = Str::of($code)->slug();
-                $canvas->save("{$tempDir}/{$name}.png");
+                $path = "{$tempDir}/{$name}.png";
+                $canvas->save($path);
+                $generatedImages[] = $path;
             }
+
+            $this->createSummaryImage($generatedImages, $tempDir);
 
             // Создаем zip со всеми картинками
             $zipName = $dm->zipName;
@@ -163,6 +168,46 @@ class DatamatrixListener
             $dm->delete();
         }
 
+    }
+
+    protected function createSummaryImage(array $imagePaths, string $tempDir): void
+    {
+        $imagePaths = array_values(array_filter($imagePaths, fn ($path) => file_exists($path)));
+        if (count($imagePaths) === 0) {
+            return;
+        }
+
+        $gap = 40;
+        $images = [];
+        $maxWidth = 0;
+        $totalHeight = 0;
+
+        foreach ($imagePaths as $index => $path) {
+            $image = Image::read($path);
+            $images[] = $image;
+
+            $maxWidth = max($maxWidth, $image->width());
+            $totalHeight += $image->height();
+
+            if ($index < count($imagePaths) - 1) {
+                $totalHeight += $gap;
+            }
+        }
+
+        $summary = Image::create($maxWidth, $totalHeight)->fill('#ffffff');
+
+        $currentY = 0;
+        foreach ($images as $index => $image) {
+            $x = (int) floor(($maxWidth - $image->width()) / 2);
+            $summary->place($image, 'top-left', $x, (int) $currentY);
+
+            $currentY += $image->height();
+            if ($index < count($images) - 1) {
+                $currentY += $gap;
+            }
+        }
+
+        $summary->save("{$tempDir}/summary.png");
     }
 
     protected function deleteDirectory(string $dir): void
